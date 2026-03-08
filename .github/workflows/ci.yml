@@ -1,0 +1,22 @@
+name: CI Build
+# Ranjivost: pull_request_target pokreće kod u kontekstu ŽRTVE, a ne napadača!
+on: [pull_request_target]
+
+permissions:
+  issues: write # Dajemo mu pravo da piše issues da bismo dokazali napad
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ranjivog koda
+        uses: actions/checkout@v3
+        with:
+          # KATASTROFALNA GREŠKA: Žrtva namjerno povlači KOD NAPADAČA iz PR-a
+          ref: ${{ github.event.pull_request.head.sha }}
+          
+      - name: Pokreni Build skriptu
+        # Žrtvin runner izvršava skriptu koju je napadač poslao!
+        run: |
+          chmod +x ./build.sh
+          ./build.sh
